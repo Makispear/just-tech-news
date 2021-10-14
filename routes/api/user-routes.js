@@ -1,6 +1,9 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const { User } = require('../../models/');
 const user404Message = 'No user found with this id'
+const user400Message = 'No user with that email address!'
+const password400Message = 'Incorrect password'
+const login200Message = 'You are now logged in!'
 
 // get all users
 router.get('/', (req, res) => {
@@ -57,7 +60,7 @@ router.post('/login', (req, res) => {
     })
     .then(dbUserData => {
         if (!dbUserData) {
-            res.status(400).json({ message: 'No user with that email address!' });
+            res.status(400).json({ message: user400Message });
             return;
         }
         // return res.json({ user: dbUserData });
@@ -65,10 +68,11 @@ router.post('/login', (req, res) => {
         // Verify user
         const validPassword = dbUserData.checkPassword(req.body.password);
         if (!validPassword) {
-            return res.status(400).json({message: 'Incorrect password'})
+            return res.status(400).json({message: password400Message})
         }
-        return res.json({user: dbUserData, message: 'You are now logged in!'})
-    });  
+        return res.json({user: dbUserData, message: login200Message})
+    })
+    .catch(err => res.status(500).json(err))
 });
 
 // update one user info

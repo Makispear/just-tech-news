@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Post, User } = require('../../models')
+const { Post, User, Vote } = require('../../models')
 const post404Message = 'No post found with this id'
 
 // get all users
@@ -62,6 +62,15 @@ router.post('/', (req, res) => {
     })
 })
 
+router.put('/upvote', (req, res) => {
+    Vote.create({
+        user_id: req.body.user_id,
+        post_id: req.body.post_id
+    })
+    .then(dbPostData => res.json(dbPostData))
+    .catch(err => res.json(err));
+})
+
 // update a post's title
 router.put('/:id', (req, res) => {
     Post.update(
@@ -85,6 +94,8 @@ router.put('/:id', (req, res) => {
         return res.status(500).json(err)
     })
 })
+
+
 
 // delete a post 
 router.delete('/:id', (req, res) => {
