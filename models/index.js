@@ -19,9 +19,9 @@ User.hasMany(Vote, {
 })
 
 // POST
-Post.hasMany(User, {
-    foreignKey: 'user_id'
-})
+// Post.hasMany(User, {
+//     foreignKey: 'user_id'
+// })
 
 Post.belongsToMany(User, {
     through: Vote,
