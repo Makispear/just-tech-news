@@ -3,7 +3,31 @@ const sequelize = require('../config/connection')
 const { post } = require('../routes/api/user-routes')
 
 // create our Post model
-class Post extends Model {}
+class Post extends Model {
+    static upvote(body, models) {
+        return models.Vote.create({
+            user_id: body.user_id,
+            post_id: body.post_id
+        })
+        .then(() => {
+            return Post.findOne({
+                where: {
+                    id: body.post_id
+                },
+                attributes: [
+                    'id',
+                    'title',
+                    'post_ul',
+                    'created_at',
+                    [
+                        sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'),
+                        'post_count']
+                ]
+            })
+        })
+        
+    }
+}
 
 Post.init(
     {
