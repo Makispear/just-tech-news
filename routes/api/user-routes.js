@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const { User } = require('../../models/');
-const { Post } = require('../../models/');
+const { User, Post, Comment } = require('../../models/');
+
 const user404Message = 'No user found with this id'
 const user400Message = 'No user with that email address!'
 const password400Message = 'Incorrect password'
@@ -23,14 +23,22 @@ router.get('/:id', (req, res) => {
     User.findOne({
         include: [
             {
-              model: Post,
-              attributes: ['id', 'title', 'post_url', 'created_at']
+                model: Post,
+                attributes: ['id', 'title', 'post_url', 'created_at']
             },
             {
-              model: Post,
-              attributes: ['title'],
-              through: 'Vote',
-              as: 'voted_posts'
+                model: Comment,
+                attributes: ['id', 'comment_text', 'created_at'],
+                include: {
+                    model: Post,
+                    attributes: ['title']
+                }
+            },
+            {
+                model: Post,
+                attributes: ['title'],
+                through: 'Vote',
+                as: 'voted_posts'
             }
           ]
     })

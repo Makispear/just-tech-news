@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const sequelize = require('sequelize')
-const { Post, User, Vote } = require('../../models')
+const { Post, User, Vote, Comment } = require('../../models')
 const post404Message = 'No post found with this id'
 
 // get all post
@@ -17,6 +17,14 @@ router.get('/', (req, res) => {
         ],
         order: [['created_at', 'DESC']],
         include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
             {
                 model: User,
                 attributes: ['username']
@@ -113,8 +121,6 @@ router.put('/:id', (req, res) => {
         return res.status(500).json(err)
     })
 })
-
-
 
 // delete a post 
 router.delete('/:id', (req, res) => {
