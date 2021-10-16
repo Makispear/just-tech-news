@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { Comment } = require('../../models/')
 const comment404Message = 'No comment found with this id'
 
+// get all comment 
 router.get('/', (req, res) => {
     Comment.findAll({})
     .then(dbCommentData => res.json(dbCommentData))
@@ -11,6 +12,7 @@ router.get('/', (req, res) => {
     })
 })
 
+// add a comment 
 router.post('/', (req, res) => {
     Comment.create({
         comment_text: req.body.comment_text,
@@ -24,8 +26,7 @@ router.post('/', (req, res) => {
     })
 })
 
-
-
+// delete a comment 
 router.delete('/:id', (req, res) => {
     Comment.destroy({
         where: {
